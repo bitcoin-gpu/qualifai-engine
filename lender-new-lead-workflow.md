@@ -1,139 +1,188 @@
-# Lender New Lead — Workflow (Audit, Fixes & Appointment Flow)
+# Lender New Lead — Corrected Blueprint
 
-The Facebook new-lead intake workflow. Instant speed-to-lead response, reply-based routing, and
-appointment booking. Current sender identity in GHL: **Builder Funding / Ty Thornton** (investor
-fix-&-flip / ground-up / SSR loans).
+The rebuilt, safe version of the Facebook new-lead workflow. Fixes all 17 audited issues: AI-intent
+routing (no fragile exact phrases), **zero dead-ends**, dedup, single application sub-workflow,
+appointment-booked exit, consistent identity (**Ty / Builder Funding**), filled links, real nurture.
 
-> GHL workflow name: **Lender New Lead**. Pairs with the separate **Reactivation Workflow**
-> (`reactivation-workflow.md`) and the **Appointment Confirmation** workflow (below).
-
----
-
-## What it does
-FB lead form submitted → internal notify + create opportunity (New Lead) → instant SMS + email →
-1-hour reply wait → route by reply (Hot / Planning-Nurture / No-reply) → Hot path qualifies → sends
-application link → tracks the `application submitted` tag → notifies team. AI intent (`schedule-yes`)
-classifies some replies.
-
-**Consent:** leads opt in on the FB ad form. **Opt-out:** "STOP" is in the texts and GHL/carrier
-honors it natively (sets DND-SMS).
+> Sender identity: **Ty** + **Builder Funding** everywhere (no more Hayden / {{user.name}} / QualifAI
+> mix). Builder Funding = placeholder brand for now. Full audit trail of what was broken is in this
+> file's git history + chat.
 
 ---
 
-## Critical fixes — DO IN THIS ORDER
-
-### Part 1 — verify the two "handled" items
-1. Confirm the FB form consent line covers **automated/recurring texts** (TCPA wording).
-2. Test: text **STOP** from a test phone → confirm contact flips to **DND (SMS)** and stops.
-3. Add proof-of-consent: first action on the trigger → **set field `SMS Consent = Yes`** (documents it +
-   gives every SMS step something to gate on).
-
-### Part 2 — critical safety (do before scaling)
-4. **Stop on Appointment Booked** — add a "Customer Booked Appointment" trigger → **Remove from
-   Workflow** + update stage to "Appointment Booked" + tag `appointment-booked`. (Booking = silent stop
-   here; the Appointment Confirmation workflow sends the messaging.)
-5. **Stop on Response = ON** (Settings) — a reply halts all pending sends.
-6. **Kill duplicate enrollment** — Settings → **Allow Re-Entry = OFF**; on Create Opportunity → **Allow
-   Duplicate = No** (update existing).
-
-### Part 3 — close every dead-end (the #1 rule)
-7. Every branch that ends with no action (esp. "Need Help → else/timeout") → add **tag + stage**
-   (Nurture or Dead) + optional nurture enrollment. **No branch ends without a tag + a stage.**
-8. Fix stuck "Application Sent" — every application-timeout path resolves to **Nurture** (don't park
-   opportunities in "Application Sent" forever).
-
-### Part 4 — biggest lead-saver: routing
-9. Replace **exact-phrase If/Else** ("Working on a deal," "Yes I need help," "Circle back," "30,90")
-   with **AI intent matching** (same `matches_intent` as `schedule-yes`). Intents:
-   `working-on-deal`, `planning-ahead`, `not-interested`, `needs-help`. Real replies route correctly
-   instead of dropping to Else.
-
-### Part 5 — maintainability
-10. **De-duplicate the Application block** — build ONE "Application Tracking" workflow triggered by tag
-    `app-link-sent`; replace every repeated block with "Add tag `app-link-sent`."
-11. Fix the contradiction: internal "**don't contact yet**" note fires while automation **does**
-    contact. Reword to "auto-outreach started — review for personal follow-up," or remove.
+## What was wrong (1-line each)
+Exact-phrase routing dropped real replies · 7 dead-end branches · `[Book Call Link]` placeholder ·
+`application submitted` tag dependency could silently fail · no appointment-booked exit · no global
+stop-on-response · "Nurture" was a dead stage · 3 conflicting sender identities · duplicate enrollment ·
+the application block duplicated 4×. **All fixed below.**
 
 ---
 
-## Improved blueprint (separate workflows)
-- **Lender New Lead (intake):** FB form trigger → dedupe + create opp + internal notify → instant
-  email + consent-gated instant SMS → 1hr reply wait → tag by **AI intent**. Stop-on-Response +
-  Stop-on-Booking ON, Re-Entry OFF.
-- **Qualification → Application** (triggered by `hot` tag): qualify Qs → application link → tag
-  `app-link-sent`.
-- **Application Tracking** (triggered by `app-link-sent`): the single Application-Sent → submitted →
-  notify / need-help block.
-- **Nurture** (triggered by `nurture` tag): long-term recurring.
-- **Appointment Confirmation** (below).
+## 0) PREREQUISITES (build once)
+
+**Pipeline stages:** New Lead → Contacted → Hot Lead → Application Sent → Application Submitted →
+Appointment Booked → Nurture → Dead
+
+**Tags:** `fb-lead` · `hot` · `nurture` · `dead` · `app-link-sent` · `application-submitted` ·
+`appointment-booked` · `escalate` · `dnc`
+
+**Custom field:** `SMS Consent` = Yes (set on entry — FB form opt-in)
+
+**AI Intents (create in Conversation AI / If-Else intent):**
+| Intent | Catches replies like |
+|---|---|
+| `working-on-deal` | "got one under contract," "yes working on a deal," "have a property" |
+| `interested-fund` | "looking to fund," "need capital," "next 30-90 days," "ready" |
+| `planning-ahead` | "planning," "not yet," "still looking," "future" |
+| `exploring` | "just looking," "researching," "exploring options" |
+| `not-interested` | "no thanks," "not interested," "remove me" |
+| `needs-help` | "yes help," "how do I," "confused," "stuck" |
+| `schedule-yes` | "yes," "sounds good," "let's do it," "book it" |
+
+**Links (fill these — no placeholders):**
+`[APPLICATION_LINK]` = https://api.leadconnectorhq.com/widget/form/QeiSbKnKofmeRTYKYrHO
+`[CALL_LINK]` = https://api.leadconnectorhq.com/widget/bookings/mortgage-calendar-9i5r1
+
+> ⚠️ **Verify before launch:** the application form at `[APPLICATION_LINK]` must **add the tag
+> `application-submitted` on submit.** If it doesn't, every applicant falsely hits the "Need Help" path.
+> Test it first.
 
 ---
 
-## Appointment Confirmation & Reminders (separate workflow)
+## WORKFLOW 1 — "Lender New Lead: Intake"
+**Trigger:** Facebook Lead Form Submitted
+**Settings:** Stop on Response = ON · Stop on Appointment Booked = ON · Allow Re-Entry = OFF ·
+Create Opportunity → Allow Duplicate = No
 
-**Trigger:** Appointment Booked. **Settings:** Stop on Response = OFF (reminders are transactional).
+**Steps:**
+1. Set field `SMS Consent = Yes`; Add tag `fb-lead`
+2. **Internal notify (team SMS):**
+   `New Builder Funding lead: {{contact.first_name}} {{contact.last_name}} {{contact.phone}}. Auto-outreach has started — review for personal follow-up.`
+   *(fixed: no longer says "don't contact yet")*
+3. Create Opportunity → stage **New Lead** (dedup on)
+4. **Instant SMS:**
+   `Hey {{contact.first_name}}, this is Ty with Builder Funding — we fund fix & flip, ground-up, and SSR deals. Saw your request. Are you working on a deal right now or planning ahead? (Reply STOP to opt out.)`
+5. **Instant Email** — Subject: `Funding your next investment deal`
+   `Hey {{contact.first_name}}, Builder Funding specializes in fast capital for fix & flips and ground-up construction. Reply here or text me back and I'll see if we're a fit for your next deal. — Ty, Builder Funding` + physical address + unsubscribe
+6. Move stage → **Contacted**
+7. **Wait** for reply or 1 hour
+8. **IF replied → AI intent route** (else → go to step 9 cadence):
+   - `working-on-deal` OR `interested-fund` → **Add tag `hot`** (→ WF2)
+   - `planning-ahead` OR `exploring` → **Add tag `nurture`** (→ WF4)
+   - `not-interested` → **Add tag `dead`** → Dead SMS → stage **Dead** → END
+   - `needs-help` / unclear / no intent match → **Add tag `escalate`** + notify broker (a human reads it — never guess) → END
+9. **No reply after 1 hr → re-engagement cadence:**
+   a. **Checking-In SMS:** `Just checking in {{contact.first_name}} — looking to fund a deal in the next 30–90 days, or just exploring?`
+   b. Wait reply or 1 day → **IF replied → AI intent route (same as step 8)**
+   c. No reply → **Follow-Up SMS:** `We close fast once the numbers make sense. Want me to take a quick look at your deal, or should I circle back later?`
+   d. Wait reply or 1 day → **IF replied → AI intent route**
+   e. No reply → **Close-the-Loop SMS:** `Don't want to bug you — should I close this out for now, or still exploring funding options?`
+   f. Wait reply or 1 day → **IF replied → AI intent route**
+   g. **No reply → Add tag `nurture` → stage Nurture → END** *(no dead-end — everyone lands in nurture)*
 
-**1 — Instant confirmation (SMS + Email)**
-SMS:
-```
-You're all set, {{contact.first_name}}! Your call with Ty at Builder Funding is booked for
-{{appointment.start_time}}. We'll go over your deal and how fast we can fund it. Reply here if
-anything changes.
-```
-Email subject: `Your Builder Funding call is confirmed — {{appointment.start_time}}`
-```
-Hi {{contact.first_name}},
-You're confirmed for a call with Ty Thornton at Builder Funding on {{appointment.start_time}}.
-We'll cover your deal, the numbers, and how quickly we can get you funded. To reschedule, just reply
-or use the link in your calendar invite.
-Talk soon, Ty — Builder Funding
-```
-
-**2 — 24 hours before → SMS**
-```
-Hey {{contact.first_name}}, quick reminder — your call with Ty at Builder Funding is tomorrow at
-{{appointment.start_time}}. Have your deal details handy (purchase price, rehab budget, market).
-Reply if you need to move it.
-```
-
-**3 — 1 hour before → SMS**
-```
-See you soon, {{contact.first_name}} — your call with Ty is in about an hour
-({{appointment.start_time}}). Talk then!
-```
-
-**4 — No-show (wait ~20 min after start → if status = No-Show)**
-SMS to lead:
-```
-Hey {{contact.first_name}}, looks like we missed each other — no worries. Grab another time here:
-{{calendar_link}}. Deals move fast and I'd hate for funding to hold yours up.
-```
-Internal: `⚠️ No-show: {{contact.name}} ({{contact.phone}}) missed their Builder Funding call.`
-Then → update stage (Hot Lead / Nurture) so they're not stuck in "Appointment Booked."
-
-**5 — Reschedule:** re-fire confirmation on the updated appointment.
+**Dead SMS (reused):** `Got it — appreciate the reply. If a deal comes up later, just reply FUNDING and I'll jump back in.`
 
 ---
 
-## Compliance summary
-- **SMS:** opt-in at FB form + `SMS Consent = Yes` field gate before each SMS; STOP honored natively.
-- **Appt-booked exit:** Stop on Appointment Booked ON (intake/nurture).
-- **Dead-ends:** none — every path ends in a tag + stage.
-- **A2P 10DLC:** registered.
+## WORKFLOW 2 — "Lender New Lead: Qualification"
+**Trigger:** Tag added `hot`
+**Settings:** Stop on Response = ON · Stop on Appointment Booked = ON
+**Steps:**
+1. Move stage → **Hot Lead**
+2. **Qualification SMS:** `Awesome — a few quick Qs so I don't waste your time: fix & flip or ground-up? purchase price? rehab budget? market/state?`
+3. Wait for reply or 1 day
+   - **Reply →** Booking-Link SMS: `Based on what you shared, this looks promising. Here's the application — takes ~2 min: [APPLICATION_LINK]` → **Add tag `app-link-sent`** (→ WF3) → END
+   - **Timeout →** Circling-Back SMS: `Hey {{contact.first_name}} — circling back. Once I've got those quick details I can show you exactly what Builder Funding can do for your deal.`
+     - Wait reply or 1 day → **Reply →** Booking-Link SMS + tag `app-link-sent` → END
+     - **No reply → Add tag `nurture` → stage Nurture → END** *(was a dead-end — now resolved)*
 
 ---
 
-## Test checklist
+## WORKFLOW 3 — "Application Tracking" (single source — built ONCE)
+**Trigger:** Tag added `app-link-sent`
+**Settings:** Stop on Appointment Booked = ON
+**Steps:**
+1. Move stage → **Application Sent**
+2. Wait for tag `application-submitted` or 1 day
+   - **Tag added →** stage **Application Submitted** → Application-Received SMS:
+     `Got your application, {{contact.first_name}} — thanks! The team will review it. Grab a time for a call here: [CALL_LINK]` → Internal notify team → END
+   - **Timeout →** Need-Help SMS: `Quick heads up {{contact.first_name}} — I haven't seen your application come through yet. Want a hand finishing it?`
+     - Wait reply or 1 day → **IF intent `needs-help`/`schedule-yes` →** Happy-to-Help SMS:
+       `No problem — happy to help. Easiest is a quick call to walk through it together. Grab a time: [CALL_LINK]` *(fixed: real link, not [Book Call Link])* → END
+     - **No reply / other → Add tag `nurture` → stage Nurture → END** *(was a dead-end — now resolved)*
+
+> Every branch that used to repeat the "Booking → Application" block now just adds tag `app-link-sent`
+> and lets THIS workflow handle it. One source of truth.
+
+---
+
+## WORKFLOW 4 — "Lender New Lead: Nurture" (real, recurring)
+**Trigger:** Tag added `nurture` (also: keyword `FUNDING` → remove `nurture`, add `hot` → re-enters WF2)
+**Settings:** Stop on Response = ON · Stop on Appointment Booked = ON
+**Steps:**
+1. Move stage → **Nurture**
+2. **Keep-in-Loop SMS:** `Perfect — I'll keep you in the loop. When a deal starts coming together, reply FUNDING and I'll jump in.`
+3. Wait 30 days → Value SMS 1 (market/rate tip)
+4. Wait 30 days → Value SMS 2 (deal-readiness tip)
+5. Wait 30 days → Re-qualify SMS: `Still here when you're ready, {{contact.first_name}} — any deals on the horizon? Reply FUNDING and I'll jump in.`
+6. Loop quarterly. Any reply → Stop-on-Response halts → handled by intent. `FUNDING` keyword → WF2.
+
+---
+
+## WORKFLOW 5 — "Appointment Confirmation & Reminders"
+**Trigger:** Appointment Booked · **Settings:** Stop on Response = OFF (reminders transactional)
+1. Confirmation (SMS + email) — `You're all set, {{contact.first_name}}! Your call with Ty at Builder Funding is booked for {{appointment.start_time}}.`
+2. 24h before → reminder
+3. 1h before → reminder
+4. No-show → "missed you, reschedule?" + `[CALL_LINK]` + notify team → stage back to Hot Lead/Nurture
+5. Stage → **Appointment Booked** on confirm
+
+---
+
+## WORKFLOW 6 — DNC / Opt-out (safety net)
+- GHL honors **STOP** natively (sets DND-SMS). Add: keyword `STOP/unsubscribe/remove` → tag `dnc`.
+- **Every outbound workflow filters out `dnc`** (do not enroll / immediately exit if tagged).
+
+---
+
+## END-STATE GUARANTEE (no lead slips)
+Every contact lands in exactly one: **Application Submitted** · **Appointment Booked** · **Nurture
+(recurring)** · **Dead** · **DNC** · **Escalate (human)**. There is no path that ends without a tag +
+stage. The 7 old dead-ends now all resolve to **Nurture** or **Dead**.
+
+---
+
+## COMPLIANCE
+- SMS: FB-form opt-in + `SMS Consent = Yes` gate; "Reply STOP" in first SMS; STOP→DND native + `dnc`.
+- Email: physical address + unsubscribe (CAN-SPAM).
+- Appt-booked exit ON; A2P 10DLC registered.
+
+---
+
+## MIGRATION (from your current build)
+1. **Verify the application form adds `application-submitted`** (test — silent killer).
+2. Turn **Stop on Response + Stop on Appointment Booked ON**, **Re-Entry OFF**, dedup opportunities.
+3. Replace all **exact-phrase IF/ELSE** with the **AI intents** above; delete trailing spaces.
+4. Replace `[Book Call Link]` with `[CALL_LINK]`.
+5. Extract the repeated application block → **WF3** (delete the 3 duplicates).
+6. Point every dead-end to **`nurture` tag → WF4** (or `dead`).
+7. Make sender **Ty / Builder Funding** everywhere; fix the team "don't contact yet" note.
+8. Build **WF4 Nurture** + the `FUNDING` keyword trigger.
+
+---
+
+## TEST CHECKLIST
 | Test | Pass = |
 |---|---|
-| FB lead submits | Opp created (no dupe), internal notify, instant email + (consent) SMS |
-| No SMS consent | Zero SMS; email only |
-| Reply "working on a deal"/similar | Routes Hot via **intent** (not exact phrase) |
-| Vague reply ("idk maybe") | Routes via intent or → broker; **never stuck** |
-| Reply STOP | DND set; all messaging stops |
-| Books a call | Intake stops silently; Appointment Confirmation fires |
-| No response | Completes cadence → Nurture (not dead-end) |
-| App link sent, tag never comes | Need-help → resolves to a stage (not stuck in "Application Sent") |
-| Application submitted tag | Stage → Submitted, team notified |
-| Duplicate FB submit | Enrolls once, no second opportunity |
-| "Not interested" / "circle back" | → Dead stage, clean |
+| FB submit | Opp created (no dupe), team notified, instant SMS + email |
+| Reply "got one under contract" | Routes **hot** via intent (not exact phrase) |
+| Reply "just looking" | Routes **nurture** |
+| Vague reply "idk" | → `escalate` + broker notified (never stuck) |
+| Reply STOP | DND set + `dnc`; all messaging stops |
+| Applies (form) | `application-submitted` tag → stage Submitted + team notified |
+| Applies but tag missing | Confirms WF3 doesn't false-trigger Need-Help (verify tag!) |
+| Books a call | All outreach stops; confirmation fires |
+| No reply ever | Cadence → **Nurture** (not dead-end), recurring |
+| Reply FUNDING (from nurture) | → `hot` → Qualification |
+| Duplicate FB submit | One opp, no double messaging |
+| "Not interested" | → Dead stage, clean |
