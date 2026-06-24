@@ -102,6 +102,7 @@ Margin lives in the **automation/appointment layer we own** — the ads are a th
 - ✅ Cold opener (email + call) built around the reactivation hook → `phase1-reactivation-offer.md`
 - ✅ GHL build kit authored (reactivation: all copy + workflow blueprint) → `phase1-ghl-build-kit.md`
 - ✅ New-lead "speed-to-lead" intake authored — full 27-scenario state machine, no dead ends → `phase1-new-lead-intake.md`
+- ✅ Conversation AI prompt (the pre-qual brain: full + short prompt, examples, tagging, handoff, edge cases) → `conversation-ai-prompt.md`
 - ⬜ Assemble both flows in GHL (paste copy → working automation) — *scheduled: tomorrow*
 - ⬜ Attorney review of the SMS/TCPA agreement language
 - ⬜ Pitch first 2–3 founding brokers → first case study
