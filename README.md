@@ -98,8 +98,8 @@ Margin lives in the **automation/appointment layer we own** — the ads are a th
 
 - ✅ Named + positioned (this doc)
 - ✅ Assets on hand: follow-up + pre-qual automations, nurtures, GHL, Facebook accounts
-- ✅ Phase-1 offer + pricing + pilot terms + client agreement → `phase1-reactivation-offer.md`
-- ✅ Cold opener (email + call) built around the reactivation hook → `phase1-reactivation-offer.md`
+- ✅ Phase-1 offer + pricing + pilot terms + client agreement → `reactivation-workflow.md`
+- ✅ Cold opener (email + call) built around the reactivation hook → `reactivation-workflow.md`
 - ✅ GHL build kit authored (reactivation: all copy + workflow blueprint) → `phase1-ghl-build-kit.md`
 - ✅ New-lead "speed-to-lead" intake authored — full 27-scenario state machine, no dead ends → `phase1-new-lead-intake.md`
 - ✅ Conversation AI prompt (the pre-qual brain: full + short prompt, examples, tagging, handoff, edge cases) → `conversation-ai-prompt.md`

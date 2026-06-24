@@ -1,4 +1,4 @@
-# QualifAI Engine — Phase 1: Database Reactivation Offer
+# QualifAI Engine — Reactivation Workflow (Offer & Pilot)
 
 The wedge offer. Deliverable **today** with what you already have (GHL + follow-up + pre-qual
 automations). Zero ad risk, fast proof, easy first "yes," and a clean on-ramp to the full Engine and

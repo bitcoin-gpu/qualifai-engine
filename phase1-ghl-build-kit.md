@@ -2,7 +2,7 @@
 
 Everything you paste into GHL tomorrow. The flow is **authored here**; tomorrow is **assembly**.
 All copy is written in the **broker's voice** (the broker is the sender to their own old leads) and
-follows CAN-SPAM (email) + TCPA/opt-out (SMS) rules from `phase1-reactivation-offer.md`.
+follows CAN-SPAM (email) + TCPA/opt-out (SMS) rules from `reactivation-workflow.md`.
 
 > Reusable across clients — swap the merge fields ({{broker_name}}, {{broker_company}}, booking link).
 

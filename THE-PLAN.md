@@ -55,7 +55,7 @@ The domain is recovering from a volume spike, so outbound is paused. Use the win
       (Emails live in `tx-brokers-enriched.csv` in the LOS repo. Plain text, no links, booking link in
       the reply.)
 - [ ] **Reply → book a call → pitch the 30-day reactivation pilot** (risk-reversed: pay per booked
-      qualified appointment). See `phase1-reactivation-offer.md`.
+      qualified appointment). See `reactivation-workflow.md`.
 
 ## Phase C — ON YOUR FIRST "YES"
 
