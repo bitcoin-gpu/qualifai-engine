@@ -1,7 +1,7 @@
 # Lender New Lead — Workflow (Audit, Fixes & Appointment Flow)
 
 The Facebook new-lead intake workflow. Instant speed-to-lead response, reply-based routing, and
-appointment booking. Current sender identity in GHL: **Builder Funding / Hayden Levi** (investor
+appointment booking. Current sender identity in GHL: **Builder Funding / Ty Thornton** (investor
 fix-&-flip / ground-up / SSR loans).
 
 > GHL workflow name: **Lender New Lead**. Pairs with the separate **Reactivation Workflow**
@@ -76,29 +76,29 @@ honors it natively (sets DND-SMS).
 **1 — Instant confirmation (SMS + Email)**
 SMS:
 ```
-You're all set, {{contact.first_name}}! Your call with Hayden at Builder Funding is booked for
+You're all set, {{contact.first_name}}! Your call with Ty at Builder Funding is booked for
 {{appointment.start_time}}. We'll go over your deal and how fast we can fund it. Reply here if
 anything changes.
 ```
 Email subject: `Your Builder Funding call is confirmed — {{appointment.start_time}}`
 ```
 Hi {{contact.first_name}},
-You're confirmed for a call with Hayden Levi at Builder Funding on {{appointment.start_time}}.
+You're confirmed for a call with Ty Thornton at Builder Funding on {{appointment.start_time}}.
 We'll cover your deal, the numbers, and how quickly we can get you funded. To reschedule, just reply
 or use the link in your calendar invite.
-Talk soon, Hayden — Builder Funding
+Talk soon, Ty — Builder Funding
 ```
 
 **2 — 24 hours before → SMS**
 ```
-Hey {{contact.first_name}}, quick reminder — your call with Hayden at Builder Funding is tomorrow at
+Hey {{contact.first_name}}, quick reminder — your call with Ty at Builder Funding is tomorrow at
 {{appointment.start_time}}. Have your deal details handy (purchase price, rehab budget, market).
 Reply if you need to move it.
 ```
 
 **3 — 1 hour before → SMS**
 ```
-See you soon, {{contact.first_name}} — your call with Hayden is in about an hour
+See you soon, {{contact.first_name}} — your call with Ty is in about an hour
 ({{appointment.start_time}}). Talk then!
 ```
 
