@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Builder Funding — Deal Pre-Qualification</title>
+<title>[Mortgage Company] — Deal Pre-Qualification</title>
 <meta name="description" content="Pre-qualify your fix & flip, ground-up, or rental deal in about 2 minutes.">
 <style>
   :root{
@@ -55,7 +55,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><div class="brand-mark">B</div><div class="brand-name">Builder Funding</div></div>
+  <div class="brand"><div class="brand-mark"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1a1206" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg></div><div class="brand-name">[Mortgage Company]</div></div>
   <h1>Let's pre-qualify your deal.</h1>
   <p class="sub">About 2 minutes. The more accurate your numbers, the faster we can tell you what we can do.</p>
   <div class="progress"><div id="bar"></div></div>
@@ -66,7 +66,7 @@
     <div class="card">
       <h2>The basics</h2>
       <label>Is this loan for a business / investment property — <u>not</u> your primary residence? <span class="req">*</span>
-        <span class="hint">Builder Funding finances business-purpose investment deals only.</span></label>
+        <span class="hint">[Mortgage Company] finances business-purpose investment deals only.</span></label>
       <div class="seg">
         <label><input type="radio" name="business_purpose" value="Yes" required><span>Yes — investment</span></label>
         <label><input type="radio" name="business_purpose" value="No"><span>No — primary home</span></label>
@@ -163,7 +163,7 @@
       <div class="consent">
         <input id="consent" name="sms_consent" type="checkbox" required>
         <label for="consent">
-          By submitting, I agree that <b>Builder Funding</b> may contact me at the email and phone provided —
+          By submitting, I agree that <b>[Mortgage Company]</b> may contact me at the email and phone provided —
           including by <b>automated technology, prerecorded/AI voice, and SMS/text</b> — for marketing and
           informational purposes. Consent is <b>not a condition</b> of any service. Msg &amp; data rates may
           apply; frequency varies. Reply <b>STOP</b> to opt out, <b>HELP</b> for help. I confirm the info
@@ -180,11 +180,11 @@
 
   <div class="legal">
     <hr>
-    <strong>Builder Funding</strong> — [Street Address], [City, ST ZIP]. <b>Business-purpose / investment
+    <strong>[Mortgage Company]</strong> — NMLS #[NMLS ID] · [Street Address], [City, ST ZIP]. <b>Business-purpose / investment
     loans only — not for owner-occupied primary residences.</b> This form is a pre-qualification inquiry,
     not a loan application or a commitment to lend. Submitting it does not guarantee approval, funding,
     or any specific rate or term. All financing is subject to underwriting, eligibility, and final
-    approval. Builder Funding [is a lender / works with licensed lending partners]. Equal opportunity lender.
+    approval. [Mortgage Company] [is a lender / works with licensed lending partners]. Equal opportunity lender.
     <a href="#" onclick="bfLegal('privacy');return false">Privacy Policy</a> ·
     <a href="#" onclick="bfLegal('terms');return false">Terms</a>
   </div>
@@ -220,7 +220,7 @@
     if(!consent.checked) return;
     // Compliance/UX: warn if not business-purpose (out of program)
     var bp=form.querySelector('input[name="business_purpose"]:checked');
-    if(bp && bp.value==='No'){ alert("Builder Funding finances investment/business-purpose deals only — not primary residences."); return; }
+    if(bp && bp.value==='No'){ alert("[Mortgage Company] finances investment/business-purpose deals only — not primary residences."); return; }
 
     // === WIRE TO GHL ===
     // Recommended: this is the "application/pre-qual" form (#2 in the workflow).
