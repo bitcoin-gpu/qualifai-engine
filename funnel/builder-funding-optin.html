@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Builder Funding — Fast Capital for Investors</title>
+<meta name="description" content="Fast capital for fix & flip, ground-up construction, and rental investors. See if your next deal is a fit.">
+<style>
+  :root{
+    --bg:#0c1018; --bg2:#11161f; --card:#161c27; --brd:#252d3a;
+    --tx:#f1f5f9; --tx2:#94a3b8; --acc:#f59e0b; --acc2:#fbbf24; --ok:#22c55e;
+    --r:14px; --maxw:560px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0c1018,#0a0d14);color:var(--tx);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:32px 20px 60px}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+  .brand-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#1a1206;font-size:18px}
+  .brand-name{font-weight:700;font-size:18px;letter-spacing:-.01em}
+  h1{font-size:30px;line-height:1.15;letter-spacing:-.02em;margin:0 0 12px}
+  h1 .hl{color:var(--acc2)}
+  .sub{color:var(--tx2);font-size:17px;margin:0 0 24px}
+  .trust{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 28px}
+  .pill{background:var(--bg2);border:1px solid var(--brd);border-radius:999px;padding:7px 13px;font-size:13px;color:var(--tx2)}
+  .pill b{color:var(--tx);font-weight:600}
+  .card{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:24px}
+  .card h2{font-size:19px;margin:0 0 4px}
+  .card p.lead{color:var(--tx2);font-size:14px;margin:0 0 20px}
+  label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px;color:var(--tx)}
+  .req{color:var(--acc2)}
+  input,select{width:100%;background:#0e131c;border:1px solid var(--brd);border-radius:10px;color:var(--tx);
+    padding:13px 14px;font-size:16px;font-family:inherit;transition:border-color .15s}
+  input:focus,select:focus{outline:none;border-color:var(--acc)}
+  .row{display:flex;gap:12px}
+  .row>div{flex:1}
+  .consent{display:flex;gap:10px;align-items:flex-start;margin:20px 0 8px;background:#0e131c;border:1px solid var(--brd);
+    border-radius:10px;padding:13px}
+  .consent input{width:18px;height:18px;margin-top:2px;flex:0 0 auto;accent-color:var(--acc)}
+  .consent label{margin:0;font-size:11.5px;font-weight:400;color:var(--tx2);line-height:1.45}
+  .consent a{color:var(--acc2);text-decoration:underline}
+  .btn{width:100%;margin-top:18px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#1a1206;
+    border:none;border-radius:11px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .05s}
+  .btn:hover{opacity:.94}
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .secure{text-align:center;color:var(--tx2);font-size:12px;margin-top:14px}
+  .legal{color:#64748b;font-size:11px;line-height:1.5;margin-top:28px}
+  .legal a{color:#94a3b8;text-decoration:underline}
+  .legal hr{border:none;border-top:1px solid var(--brd);margin:14px 0}
+  .err{color:#f87171;font-size:12px;margin-top:6px;display:none}
+  @media(max-width:480px){h1{font-size:25px}.row{flex-direction:column;gap:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="brand-mark">B</div>
+    <div class="brand-name">Builder Funding</div>
+  </div>
+
+  <h1>Fast capital for your next <span class="hl">fix &amp; flip</span> or ground-up build.</h1>
+  <p class="sub">We fund investor deals — fix &amp; flip, new construction, and rental (DSCR). Tell us about your project and we'll see if it's a fit.</p>
+
+  <div class="trust">
+    <span class="pill"><b>Investor-focused</b> lending</span>
+    <span class="pill"><b>Fast</b> closings</span>
+    <span class="pill"><b>Built for builders</b> &amp; flippers</span>
+  </div>
+
+  <div class="card">
+    <h2>See if your deal qualifies</h2>
+    <p class="lead">Takes 30 seconds. No impact to your credit.</p>
+
+    <form id="optinForm" novalidate>
+      <div class="row">
+        <div>
+          <label for="first_name">First name <span class="req">*</span></label>
+          <input id="first_name" name="first_name" type="text" autocomplete="given-name" required>
+        </div>
+        <div>
+          <label for="last_name">Last name <span class="req">*</span></label>
+          <input id="last_name" name="last_name" type="text" autocomplete="family-name" required>
+        </div>
+      </div>
+
+      <label for="email">Email <span class="req">*</span></label>
+      <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required>
+      <div class="err" id="email_err">Enter a valid email.</div>
+
+      <label for="phone">Mobile phone <span class="req">*</span></label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required>
+      <div class="err" id="phone_err">Enter a valid phone number.</div>
+
+      <label for="stage">Where are you with your next deal? <span class="req">*</span></label>
+      <select id="stage" name="deal_stage" required>
+        <option value="" disabled selected>Choose one…</option>
+        <option value="Working on a deal">I'm working on a deal now</option>
+        <option value="Planning ahead">Planning ahead / lining up funding</option>
+        <option value="Just exploring">Just exploring options</option>
+      </select>
+
+      <div class="consent">
+        <input id="consent" name="sms_consent" type="checkbox" required>
+        <label for="consent">
+          By checking this box, I agree that <b>Builder Funding</b> may contact me at the email and phone
+          number provided — including by <b>automated technology, prerecorded/AI voice, and SMS/text</b> —
+          for marketing and informational purposes. Consent is <b>not a condition</b> of any service.
+          Msg &amp; data rates may apply; msg frequency varies. Reply <b>STOP</b> to opt out, <b>HELP</b> for help.
+          I agree to the <a href="#" onclick="bfLegal('privacy');return false">Privacy Policy</a> and
+          <a href="#" onclick="bfLegal('terms');return false">Terms</a>.
+        </label>
+      </div>
+
+      <button class="btn" id="submitBtn" type="submit" disabled>See if I qualify →</button>
+      <p class="secure">🔒 Your information is secure and never sold.</p>
+    </form>
+  </div>
+
+  <div class="legal">
+    <hr>
+    <strong>Builder Funding</strong> — [Street Address], [City, ST ZIP]. Business-purpose &amp; investment
+    loans only; <b>not for owner-occupied primary residences.</b> This is not a commitment to lend or an
+    offer of credit. All loans are subject to underwriting review, eligibility, and approval; rates and
+    terms vary by deal and are not guaranteed. Builder Funding [is a lender / works with licensed lending
+    partners]. Equal opportunity lender.
+    <a href="#" onclick="bfLegal('privacy');return false">Privacy Policy</a> ·
+    <a href="#" onclick="bfLegal('terms');return false">Terms of Service</a>
+  </div>
+</div>
+
+<script>
+  // Enable submit only when consent is checked (express-consent best practice)
+  var consent = document.getElementById('consent');
+  var btn = document.getElementById('submitBtn');
+  consent.addEventListener('change', function(){ btn.disabled = !consent.checked; });
+
+  function bfLegal(which){
+    // TODO: point these to your hosted Privacy Policy / Terms pages (or modals)
+    alert('Open the ' + (which==='privacy'?'Privacy Policy':'Terms of Service') + ' page here.');
+  }
+
+  document.getElementById('optinForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var email=document.getElementById('email'), phone=document.getElementById('phone');
+    var ok=true;
+    var emErr=document.getElementById('email_err'), phErr=document.getElementById('phone_err');
+    emErr.style.display = (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value))?'none':(ok=false,'block');
+    var digits=phone.value.replace(/\D/g,'');
+    phErr.style.display = (digits.length>=10)?'none':(ok=false,'block');
+    if(!ok) return;
+    if(!consent.checked) return;
+
+    // === WIRE TO GHL ===
+    // Option A (simplest): rebuild these exact fields in a GHL Form and use THIS as the design.
+    // Option B: POST to a GHL Inbound Webhook URL, mapping field names to contact + custom fields.
+    //   Important: also set custom field "SMS Consent" = "Yes" and store a consent timestamp for TCPA proof.
+    // Example:
+    // fetch('YOUR_GHL_WEBHOOK_URL',{method:'POST',headers:{'Content-Type':'application/json'},
+    //   body:JSON.stringify(Object.fromEntries(new FormData(e.target)))})
+    //   .then(()=>window.location.href='/thank-you');
+
+    btn.textContent='Submitting…'; btn.disabled=true;
+    // window.location.href='/pre-qualify';  // send them to the pre-qual form next
+  });
+</script>
+</body>
+</html>
